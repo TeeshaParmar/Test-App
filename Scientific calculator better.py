@@ -1,61 +1,38 @@
+# app.py
 import streamlit as st
 import math
 
-# --- PAGE CONFIG ---
+# -------- PAGE CONFIG ----------
 st.set_page_config(page_title="Scientific Calculator", page_icon="🧮", layout="centered")
 
-# --- CUSTOM STYLE ---
-st.markdown("""
+# -------- CSS (white background, clean look) ----------
+st.markdown(
+    """
     <style>
         .stApp {
             background-color: #FFFFFF;
             color: #000000;
             text-align: center;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
         }
         .calculator {
-            background-color: #f8f8f8;
-            padding: 20px;
+            background-color: #f6f7f9;
+            padding: 18px;
             border-radius: 12px;
-            width: 340px;
-            margin: auto;
-            box-shadow: 0 0 15px rgba(0,0,0,0.15);
+            width: 360px;
+            margin: 18px auto;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         }
-        .stTextInput > div > div > input {
+        .stTextInput>div>div>input {
             text-align: right;
             background-color: #ffffff;
             color: #000000;
-            font-size: 1.5em;
+            font-size: 1.4rem;
             border-radius: 8px;
-            height: 50px;
-            border: 2px solid #ccc;
+            height: 56px;
+            border: 1.5px solid #d0d7de;
         }
-        .stButton > button {
-            width: 65px;
-            height: 50px;
+        .stButton>button {
+            width: 64px;
+            height: 48px;
             margin: 4px;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: 600;
-            border: none;
-            color: white;
-            background-color: #0078D4;
-            transition: 0.2s;
-        }
-        .stButton > button:hover {
-            background-color: #005A9E;
-            transform: scale(1.05);
-        }
-        .orange > button {
-            background-color: #E67E22 !important;
-        }
-        .gray > button {
-            background-color: #555 !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("<h2 style='text-align:center;'>🧮 Scientific Calculator</h2>", unsafe_allow_html=True)
-
-# --- STATE ---
-if "expression"
