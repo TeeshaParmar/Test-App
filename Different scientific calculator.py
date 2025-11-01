@@ -649,7 +649,7 @@ with col4:
         append_to_display('3')
         st.rerun()
 with col5:
-    if st.button("-", key="sub", use_container_width=True):
+    if st.button("−", key="sub", use_container_width=True):
         set_operator('-')
         st.rerun()
 
