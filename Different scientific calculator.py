@@ -674,7 +674,7 @@ with col4:
         equals()
         st.rerun()
 with col5:
-    if st.button("+", key="add", use_container_width=True):
+    if st.button("＋", key="add", use_container_width=True):
         set_operator('+')
         st.rerun()
 
