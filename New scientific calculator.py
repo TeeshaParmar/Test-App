@@ -1,88 +1,77 @@
-# app.py
 import streamlit as st
 import math
-import ast
-import operator
 
-# ---------- Config ----------
-st.set_page_config(page_title="Scientific Calculator (Casio-style)", page_icon="🧮", layout="centered")
+# ---------- PAGE SETTINGS ----------
+st.set_page_config(page_title="Scientific Calculator", page_icon="🧮", layout="centered")
 
 st.markdown(
     """
-    <div style="text-align:center">
-      <h2 style="margin-bottom:0.1rem">🔢 Scientific Calculator (Casio-style)</h2>
-      <div style="color:gray; font-size:0.9rem">Safe evaluation — supports sin, cos, tan, ln, log, sqrt, factorial, π, e, ^, %</div>
-    </div>
+    <h1 style="text-align:center;">🔢 Scientific Calculator (Casio fx-991 Style)</h1>
+    <p style="text-align:center; color:gray;">Built with Streamlit | Supports basic & scientific operations</p>
     """,
     unsafe_allow_html=True
 )
 
-# ---------- Session state ----------
-if "expr" not in st.session_state:
-    st.session_state.expr = ""
+# ---------- SESSION STATE ----------
+if "input" not in st.session_state:
+    st.session_state.input = ""
 
-if "history" not in st.session_state:
-    st.session_state.history = []
+# ---------- FUNCTIONS ----------
+def append(symbol):
+    st.session_state.input += symbol
 
-# ---------- Safe evaluator using AST ----------
-# Allowed operators mapping
-_allowed_operators = {
-    ast.Add: operator.add,
-    ast.Sub: operator.sub,
-    ast.Mult: operator.mul,
-    ast.Div: operator.truediv,
-    ast.Pow: operator.pow,
-    ast.USub: operator.neg,
-    ast.UAdd: operator.pos,
-    ast.Mod: operator.mod,
-    ast.FloorDiv: operator.floordiv,
-}
+def clear():
+    st.session_state.input = ""
 
-# Allowed names (functions/constants)
-_allowed_names = {
-    "sin": math.sin,
-    "cos": math.cos,
-    "tan": math.tan,
-    "asin": math.asin,
-    "acos": math.acos,
-    "atan": math.atan,
-    "sqrt": math.sqrt,
-    "ln": math.log,         # natural log
-    "log": math.log10,      # log base 10
-    "exp": math.exp,
-    "pi": math.pi,
-    "e": math.e,
-    "abs": abs,
-    "fact": math.factorial, # use fact(n) for factorial
-}
+def delete():
+    st.session_state.input = st.session_state.input[:-1]
 
-def _eval_node(node):
-    """Recursively evaluate an AST node with strict rules."""
-    if isinstance(node, ast.Expression):
-        return _eval_node(node.body)
+def evaluate():
+    try:
+        expr = st.session_state.input
+        expr = expr.replace("^", "**")
+        expr = expr.replace("×", "*").replace("÷", "/")
+        expr = expr.replace("π", str(math.pi))
+        expr = expr.replace("√", "math.sqrt")
+        expr = expr.replace("sin", "math.sin")
+        expr = expr.replace("cos", "math.cos")
+        expr = expr.replace("tan", "math.tan")
+        expr = expr.replace("log", "math.log10")
+        expr = expr.replace("ln", "math.log")
+        expr = expr.replace("e", str(math.e))
+        result = eval(expr, {"math": math})
+        st.session_state.input = str(result)
+    except:
+        st.session_state.input = "Error"
 
-    # Numbers
-    if isinstance(node, ast.Constant):
-        if isinstance(node.value, (int, float)):
-            return node.value
-        else:
-            raise ValueError("Unsupported constant type")
+# ---------- DISPLAY ----------
+st.text_input("Display", value=st.session_state.input, key="display", disabled=True)
 
-    # Binary operations
-    if isinstance(node, ast.BinOp):
-        left = _eval_node(node.left)
-        right = _eval_node(node.right)
-        op_type = type(node.op)
-        if op_type in _allowed_operators:
-            return _allowed_operators[op_type](left, right)
-        else:
-            raise ValueError(f"Operator {op_type} not allowed")
+# ---------- BUTTON LAYOUT ----------
+buttons = [
+    ["7", "8", "9", "÷", "sin"],
+    ["4", "5", "6", "×", "cos"],
+    ["1", "2", "3", "-", "tan"],
+    ["0", ".", "=", "+", "log"],
+    ["(", ")", "^", "√", "ln"],
+    ["π", "e", "C", "DEL", "AC"]
+]
 
-    # Unary operations (+/-)
-    if isinstance(node, ast.UnaryOp):
-        operand = _eval_node(node.operand)
-        op_type = type(node.op)
-        if op_type in _allowed_operators:
-            return _allowed_operators[op_type](operand)
-        else:
-            raise V
+# ---------- BUTTON GRID ----------
+for row in buttons:
+    cols = st.columns(len(row))
+    for i, btn in enumerate(row):
+        if cols[i].button(btn):
+            if btn == "=":
+                evaluate()
+            elif btn == "C":
+                clear()
+            elif btn == "DEL":
+                delete()
+            elif btn == "AC":
+                clear()
+            else:
+                append(btn)
+
+st.caption("Made with ❤️ using Streamlit | Supports sin, cos, tan, log, ln, √, π, e, ^")
+
